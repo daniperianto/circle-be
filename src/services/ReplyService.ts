@@ -1,11 +1,12 @@
-import { Repository } from 'typeorm';
-import { Thread } from './../entity/Thread';
-import { AppDataSource } from '../data-source';
+import { Repository } from "typeorm"
+import { Reply } from "../entity/Reply"
+import { AppDataSource } from "../data-source"
+import { User } from "../entity/User"
 
-export default new class ThreadService {
-    private readonly repository: Repository<Thread> = AppDataSource.getRepository(Thread)
-    
-    async findAll(): Promise<Thread[]> {
+export default new class ReplyService {
+    private readonly repository: Repository<Reply> = AppDataSource.getRepository(Reply)
+
+    async findAll(): Promise<Reply[]> {
         return await this.repository.find({
             order: {
                 created_at: "DESC"
@@ -13,21 +14,21 @@ export default new class ThreadService {
         })
     }
 
-    async findById(id: number): Promise<Thread> {
-        const thread = await this.repository.findOne({
+    async findById(id: number): Promise<Reply> {
+        const reply = await this.repository.findOne({
             where: {
                 id: id
             }
         })
 
-        return thread
+        return reply
     }
 
-    async findByUserId(id: number): Promise<Thread[]> {
-        const threads = await this.repository.find({
+    async findByUserId(userid: number): Promise<Reply[]> {
+        const replies = await this.repository.find({
             where: {
-                created_by: {
-                    id: id
+                user: {
+                    id: userid
                 }
             },
             order: {
@@ -35,26 +36,41 @@ export default new class ThreadService {
             }
         })
 
-        return threads
+        return replies
     }
 
-    async create(data: any): Promise<Thread> {
+    async findByThreadId(threadid: number): Promise<Reply[]> {
+        const replies = await this.repository.find({
+            where: {
+                thread: {
+                    id: threadid
+                }
+            },
+            order: {
+                created_at: "DESC"
+            }
+        })
+
+        return replies
+    }
+
+    async create( data: any): Promise<Reply> {
         const obj = this.repository.create({
             content: data.content,
             image: data.image,
-            created_by: data.user_id,
-            updated_by: data.user_id
+            user: data.userId,
+            thread: data.threadId
         })
 
-        const thread = await this.repository.save(obj)
+        const reply = await this.repository.save(obj)
 
-        return thread
+        return reply
     }
 
     async update(id: number, data: any): Promise<boolean> {
         const result = await this.repository
                         .createQueryBuilder()
-                        .update(Thread)
+                        .update(Reply)
                         .set({
                             content: data.content,
                             image: data.image,
@@ -70,7 +86,7 @@ export default new class ThreadService {
         const result = await this.repository
                         .createQueryBuilder()
                         .delete()
-                        .from(Thread)
+                        .from(Reply)
                         .where("id = :id", {id: id})
                         .execute()
 

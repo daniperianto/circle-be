@@ -7,16 +7,20 @@ export class Reply {
     @PrimaryGeneratedColumn()
     id: number
 
-    @ManyToOne(() => User, (user) => user.replies)
+    @ManyToOne(() => User, (user) => user.replies, {
+        cascade: true, onDelete: "CASCADE"
+    })
     user: User
 
-    @ManyToOne(() => Thread, (thread) => thread.replies)
+    @ManyToOne(() => Thread, (thread) => thread.replies, {
+        cascade: true, onDelete: "CASCADE"
+    })
     thread: Thread
 
     @Column()
     content: string
 
-    @Column()
+    @Column({nullable: true})
     image: string
 
     @Column({type: "timestamp", default: () => "CURRENT_TIMESTAMP"})

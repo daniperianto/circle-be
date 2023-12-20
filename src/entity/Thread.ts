@@ -12,7 +12,7 @@ export class Thread {
     @Column()
     content: string
 
-    @Column()
+    @Column({nullable: true})
     image: string
 
     @Column({type: "timestamp", default: () => "CURRENT_TIMESTAMP"})
@@ -27,7 +27,7 @@ export class Thread {
     updated_at: Date
 
     @ManyToOne(() => User, (user) => user.threads, {
-        cascade: true, onDelete: 'SET NULL'
+        cascade: true, onDelete: "CASCADE"
     })
     updated_by: User
 

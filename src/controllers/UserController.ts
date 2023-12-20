@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import { createUserSchema } from "../utils/validator/UserValidator";
 import UserService from "../services/UserService";
-import bcrypt from "bcrypt"
+import * as bcrypt from "bcrypt"
 import { User } from "../entity/User";
 import { createLoginUserSchema } from "../utils/validator/LoginValidator";
+import * as jwt from "jsonwebtoken"
 
 export default new class UserController{
     async register(req: Request, res: Response) {
@@ -50,8 +51,16 @@ export default new class UserController{
             const isPasswordMatch = await bcrypt.compare(data.password, user.password)
             if (!isPasswordMatch) return res.status(409).json({ message: "Incorrect password!"})
 
-            return res.status(200).json("login success")
+            const registeredUser = {
+                id: user.id,
+                username: user.username
+            }
+
+            const token = jwt.sign({registeredUser}, "secret", {expiresIn: 3600})
+
+            return res.status(200).json({registeredUser, token})
         } catch(error) {
+            console.log(error)
             return res.status(500).json({message: "something error while login"})
         }
     }
