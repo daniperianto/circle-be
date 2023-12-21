@@ -35,15 +35,12 @@ export class User {
     updated_at: Date
 
     @OneToMany(() => Thread, (thread) => {
-        thread.created_by
-        thread.updated_by
+        thread.user
     })
     threads: Thread
 
     @OneToMany(() => Like, (like) => {
         like.user
-        // like.created_by
-        // like.updated_by
     })
     likes: Like
 

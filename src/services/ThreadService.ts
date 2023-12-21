@@ -1,24 +1,33 @@
 import { Repository } from 'typeorm';
 import { Thread } from './../entity/Thread';
 import { AppDataSource } from '../data-source';
+import LikeService from './LikeService';
+import { number } from 'joi';
 
 export default new class ThreadService {
     private readonly repository: Repository<Thread> = AppDataSource.getRepository(Thread)
     
-    async findAll(): Promise<Thread[]> {
-        return await this.repository.find({
-            order: {
-                created_at: "DESC"
-            }
-        })
+    async findAll(): Promise<any[]> {
+        const threads = await this.repository
+                                 .createQueryBuilder('thread')
+                                 .leftJoinAndSelect('thread.user', 'user')
+                                 .orderBy('thread.created_at', 'DESC' )
+                                 .getMany()
+
+        
+        
+        return threads
     }
 
     async findById(id: number): Promise<Thread> {
-        const thread = await this.repository.findOne({
-            where: {
-                id: id
-            }
-        })
+        const thread = await this.repository
+                                .createQueryBuilder('thread')
+                                .leftJoinAndSelect('thread.user', 'user')
+                                .where("thread.id = :id ", {id: id})
+                                .orderBy('thread.created_at', 'DESC' )
+                                .getOne()
+
+        
 
         return thread
     }
@@ -26,7 +35,7 @@ export default new class ThreadService {
     async findByUserId(id: number): Promise<Thread[]> {
         const threads = await this.repository.find({
             where: {
-                created_by: {
+                user: {
                     id: id
                 }
             },
@@ -42,8 +51,9 @@ export default new class ThreadService {
         const obj = this.repository.create({
             content: data.content,
             image: data.image,
-            created_by: data.user_id,
-            updated_by: data.user_id
+            user: {
+                id: data.user_id
+            }
         })
 
         const thread = await this.repository.save(obj)
@@ -76,4 +86,6 @@ export default new class ThreadService {
 
         return result.affected == 1 ? true : false
     }
+
+
 }

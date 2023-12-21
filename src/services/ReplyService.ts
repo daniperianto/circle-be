@@ -1,3 +1,4 @@
+import { Thread } from './../entity/Thread';
 import { Repository } from "typeorm"
 import { Reply } from "../entity/Reply"
 import { AppDataSource } from "../data-source"
@@ -40,18 +41,28 @@ export default new class ReplyService {
     }
 
     async findByThreadId(threadid: number): Promise<Reply[]> {
-        const replies = await this.repository.find({
-            where: {
-                thread: {
-                    id: threadid
-                }
-            },
-            order: {
-                created_at: "DESC"
-            }
-        })
+        const replies = await this.repository
+                            .createQueryBuilder('reply')
+                            .innerJoinAndSelect('reply.user', 'user')
+                            .where('reply.thread = :id', {id: threadid})
+                            .orderBy('reply.created_at', 'ASC')
+                            .getMany()
 
         return replies
+    }
+
+    async getRepliesCount(threadId: number): Promise<number> {
+        const count = await this.repository
+                        .createQueryBuilder()
+                        .select()
+                        .where({
+                            thread: {
+                                id: threadId
+                            }
+                        })
+                        .getCount()
+
+        return count
     }
 
     async create( data: any): Promise<Reply> {

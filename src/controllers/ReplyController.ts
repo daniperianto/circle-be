@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Reply } from './../entity/Reply';
 import ReplyService from '../services/ReplyService';
 import { createReplySchema } from '../utils/validator/ReplyValidator';
+
 export default new class ReplyController {
     async findAll(req: Request, res: Response) {
         try {
@@ -48,7 +49,7 @@ export default new class ReplyController {
 
     async findByThreadId(req: Request, res: Response) {
         try {
-            const id = Number(req.params.threadid)
+            const id = Number(req.params.threadId)
             const reply = await ReplyService.findByThreadId(id)
 
             return res.status(200).json(reply)
@@ -57,10 +58,21 @@ export default new class ReplyController {
         }
     }
 
+    async getRepliesCount(req: Request, res: Response) {
+        try {
+            const id = Number(req.params.threadId)
+            const count = await ReplyService.getRepliesCount(id)
+
+            return res.status(200).json(count)
+        } catch(error) {
+            return res.status(500).json({message: "something error while counting replies"})
+        }
+    }
+
     async create(req: Request, res: Response) {
         try {
             const userId = res.locals.loginSession.registeredUser.id
-            const threadid = Number(req.params.threadid)
+            const threadid = Number(req.params.threadId)
             const data = req.body
 
             const { error } = createReplySchema.validate(data)

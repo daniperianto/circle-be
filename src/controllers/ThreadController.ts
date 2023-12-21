@@ -7,8 +7,11 @@ export default new class ThreadController {
         try {
             const threads = await ThreadService.findAll()
 
+            
+
             return res.status(200).json(threads)
         } catch(error) {
+            console.log(error)
             return res.status(500).json({message: "something error while fetching data"})
         }
     }
@@ -31,13 +34,14 @@ export default new class ThreadController {
 
             return res.status(200).json(thread)
         } catch(error) {
+            console.log(error)
             return res.status(500).json({message: "something error while fetching data"})
         }
     }
 
     async create(req: Request, res: Response) {
         try {
-            const userId = res.locals.loginSession.id
+            const userId = res.locals.loginSession.registeredUser.id
             const data = req.body
 
             const { error } = createThreadSchema.validate(data)

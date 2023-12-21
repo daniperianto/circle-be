@@ -6,9 +6,10 @@ import ReplyController from '../controllers/ReplyController';
 const replyRouter = express.Router()
 
 
-replyRouter.get("/reply/:threadid", ReplyController.findByThreadId)
-replyRouter.post("/reply/:threadid/add",auth.Authentication, ReplyController.create)
-replyRouter.put("/reply/:threadid/:id",auth.Authentication, ReplyController.update)
+replyRouter.get("/thread/:threadId/replies", ReplyController.findByThreadId)
+replyRouter.get("/thread/:threadId/total-replies", ReplyController.getRepliesCount)
+replyRouter.post("/thread/:threadId/reply/add",auth.Authentication, ReplyController.create)
+replyRouter.put("/thread/:threadId/reply/:id",auth.Authentication, ReplyController.update)
 replyRouter.delete("/reply/:id",auth.Authentication, ReplyController.delete)
 
 export default replyRouter;
