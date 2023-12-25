@@ -7,4 +7,8 @@ export const createThreadSchema = joi.object({
 
     image:joi
         .string()
+        .allow(null),
+
+    user_id: joi
+        .number()
 })

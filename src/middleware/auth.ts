@@ -13,7 +13,7 @@ export default new class Authentication {
             const token = auth.split(" ")[1]
 
             try {
-                const loginSession = jwt.verify(token, "secret")
+                const loginSession = jwt.verify(token, process.env.SECRET_KEY)
                 res.locals.loginSession = loginSession
                 next()
             } catch (error) {

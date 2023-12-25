@@ -6,6 +6,7 @@ import threadRouter from "./routes/thread"
 import replyRouter from "./routes/reply"
 import * as cors from "cors"
 import likeRouter from "./routes/like"
+import cloudinary from "./libs/cloudinary"
 dotenv.config()
 
 AppDataSource.initialize().then(async () => {
@@ -15,6 +16,7 @@ AppDataSource.initialize().then(async () => {
     const optionCors = {
         origin: "http://localhost:5173"
     }
+    cloudinary.upload()
 
     app.use(cors(optionCors))
     app.use(express.json())
@@ -22,6 +24,8 @@ AppDataSource.initialize().then(async () => {
     app.use("/api/v1", threadRouter)
     app.use("/api/v1", replyRouter)
     app.use("/api/v1", likeRouter)
+
+    
     
 
     app.listen(port, () => console.log("Server running on 5000"))

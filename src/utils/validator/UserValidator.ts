@@ -5,8 +5,7 @@ export const createUserSchema = joi.object({
         .string()
         .pattern(new RegExp(`[@]*`))
         .min(3)
-        .max(20)
-        .required(),
+        .max(20),
     
     fullname:joi
         .string()

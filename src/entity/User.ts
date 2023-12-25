@@ -22,8 +22,11 @@ export class User {
     @Column()
     password: string
 
-    @Column({nullable: true})
+    @Column({nullable: true, default: "https://img.freepik.com/premium-vector/blue-silhouette-person-s-face-against-white-background_754208-70.jpg?w=740"})
     photo_profile: string
+
+    @Column({nullable: true, default: "https://images.unsplash.com/photo-1524893829393-a74a8c51c635?q=80&w=1973&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"})
+    background_image: string
 
     @Column({nullable: true})
     bio: string

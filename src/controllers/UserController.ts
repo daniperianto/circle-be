@@ -10,16 +10,16 @@ export default new class UserController{
     async register(req: Request, res: Response) {
         try {
             const data = req.body
-            console.log(data)
+            data.username = '@' + data.fullname
 
             const { error } = createUserSchema.validate(data)
             if (error) return res.status(400).json(error.message)
 
             const checkEmail = await UserService.findByEmail(data.email)
-            if (checkEmail) return res.status(400).json({message: "email already exist"})
+            if (checkEmail) return res.status(400).json({message: "email already exist!"})
 
             const checkUsername = await UserService.findByUsername(data.username)
-            if (checkUsername) return res.status(400).json({message: "username already exist"})
+            if (checkUsername) return res.status(400).json({message: "username already exist!"})
 
 
             data.password = await bcrypt.hash(data.password, 10)
@@ -53,10 +53,13 @@ export default new class UserController{
 
             const registeredUser = {
                 id: user.id,
-                username: user.username
+                username: user.username,
+                fullname: user.fullname,
+                photo_profile: user.photo_profile,
+                background_image: user.background_image
             }
 
-            const token = jwt.sign({registeredUser}, "secret", {expiresIn: 3600})
+            const token = jwt.sign({registeredUser}, process.env.SECRET_KEY, {expiresIn: 3600})
 
             return res.status(200).json({registeredUser, token})
         } catch(error) {
@@ -81,6 +84,20 @@ export default new class UserController{
                 return res.status(200).json({message: "updated success", data: user})
             } else return res.status(500).json("updated failed")
         } catch(error) {
+            return res.status(500).json({message: "internal server error"})
+        }
+    }
+
+    async check(req: Request, res: Response) {
+        try {
+            const userId = res.locals.loginSession.registeredUser.id
+            const user = await UserService.findById(userId)
+
+            if(user) return res.status(200).json({message: "token is valid"})
+            else return res.status(400).json({message: "token is not valid"})
+
+        } catch (error) {
+            console.log(error)
             return res.status(500).json({message: "internal server error"})
         }
     }

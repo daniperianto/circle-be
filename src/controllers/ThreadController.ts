@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import ThreadService from "../services/ThreadService";
 import { createThreadSchema } from "../utils/validator/ThreadValidator";
+import cloudinary from "../libs/cloudinary";
 
 export default new class ThreadController {
     async findAll(req: Request, res: Response) {
@@ -42,12 +43,18 @@ export default new class ThreadController {
     async create(req: Request, res: Response) {
         try {
             const userId = res.locals.loginSession.registeredUser.id
-            const data = req.body
+            let urlImage: string = null
+            if(req.file) urlImage = await cloudinary.destination(req.file.filename)
+
+            const data = {
+                content: req.body.content,
+                image: urlImage,
+                user_id: Number(userId)
+            }
+            
 
             const { error } = createThreadSchema.validate(data)
             if (error) return res.status(400).json(error.message)
-
-            data.user_id = userId
 
             const thread = await ThreadService.create(data)
 
