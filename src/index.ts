@@ -7,6 +7,7 @@ import replyRouter from "./routes/reply"
 import * as cors from "cors"
 import likeRouter from "./routes/like"
 import cloudinary from "./libs/cloudinary"
+import followingRouter from "./routes/following"
 dotenv.config()
 
 AppDataSource.initialize().then(async () => {
@@ -24,6 +25,7 @@ AppDataSource.initialize().then(async () => {
     app.use("/api/v1", threadRouter)
     app.use("/api/v1", replyRouter)
     app.use("/api/v1", likeRouter)
+    app.use("/api/v1", followingRouter)
 
     
     

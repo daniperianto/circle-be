@@ -1,11 +1,11 @@
-import express = require("express");
-import LikeControllers from "../controllers/LikeControllers";
+import * as express from "express"
+import LikeController from "../controllers/LikeController";
 import auth from "../middleware/auth";
 
 const likeRouter = express.Router()
 
-likeRouter.get("/thread/:threadId/likes", LikeControllers.getLikesCount)
-likeRouter.post("/thread/:threadId/like/", auth.Authentication, LikeControllers.create)
-likeRouter.delete("/thread/:threadId/like/", auth.Authentication, LikeControllers.delete)
+likeRouter.get("/thread/:threadId/likes", LikeController.getLikesCount)
+likeRouter.post("/thread/:threadId/like/", auth.Authentication, LikeController.create)
+likeRouter.delete("/thread/:threadId/like/", auth.Authentication, LikeController.delete)
 
 export default likeRouter
