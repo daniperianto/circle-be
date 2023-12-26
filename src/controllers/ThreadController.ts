@@ -17,13 +17,28 @@ export default new class ThreadController {
         }
     }
 
+    async findByFollowing(req: Request, res: Response) {
+        try {
+            const userId = Number(res.locals.loginSession.registeredUser.id)
+            console.log(userId)
+            const threads = await ThreadService.findByFollowing(userId)
+            console.log(threads)
+
+            return res.status(200).json(threads)
+        } catch(error) {
+            console.log(error)
+            return res.status(500).json({message: "something error while fetching data"})
+        }
+    }
+
     async findByUser(req: Request, res: Response) {
         try {
-            const userId = Number(req.params.userid)
+            const userId = Number(res.locals.loginSession.registeredUser.id)
             const threads = await ThreadService.findByUserId(userId)
 
             return res.status(200).json(threads)
         } catch(error) {
+            console.log(error)
             return res.status(500).json({message: "something error while fetching data"})
         }
     }

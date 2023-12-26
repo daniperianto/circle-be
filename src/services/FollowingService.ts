@@ -12,7 +12,7 @@ export default new class FollowingService {
                                 .insert()
                                 .into(Following)
                                 .values({
-                                    follower_id: {
+                                    followers_id: {
                                         id: followersId
                                     },
                                     following_id: {
@@ -39,9 +39,7 @@ export default new class FollowingService {
 
     async getTotalFollowing(userId: number): Promise<number> {
         const total_following = await this.repository
-                                        .createQueryBuilder()
-                                        .select('following')
-                                        .from(Following, 'following')
+                                        .createQueryBuilder('following')
                                         .where("following.followers_id = :id", {id: userId})
                                         .getCount()
 
@@ -50,9 +48,7 @@ export default new class FollowingService {
 
     async getTotalFollowers(userId: number): Promise<number> {
         const total_followers = await this.repository
-                                        .createQueryBuilder()
-                                        .select('following')
-                                        .from(Following, 'following')
+                                        .createQueryBuilder('following')
                                         .where("following.following_id = :id", {id: userId})
                                         .getCount()
 

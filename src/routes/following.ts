@@ -6,8 +6,8 @@ const followingRouter = express.Router()
 
 followingRouter.get("/following/:id/count", FollowingController.getTotalFollowing)
 followingRouter.get("/followers/:id/count", FollowingController.getTotalFollowers)
-followingRouter.post("/following/add", auth.Authentication, FollowingController.create)
-followingRouter.delete("/following/delete", auth.Authentication, FollowingController.delete)
+followingRouter.post("/following/add/:id", auth.Authentication, FollowingController.create)
+followingRouter.delete("/following/delete/:id", auth.Authentication, FollowingController.delete)
 followingRouter.get("/following/suggested-accounts", auth.Authentication, FollowingController.getSugestedAccount)
 
 export default followingRouter

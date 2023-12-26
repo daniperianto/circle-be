@@ -4,11 +4,12 @@ import FollowingService from "../services/FollowingService";
 export default new class FollowingController {
     async create(req: Request, res: Response) {
         try {
-            const following_id  = req.body.following_id
+            const following_id  = req.params.id
             const id = res.locals.loginSession.registeredUser.id
             const following = await FollowingService.create(Number(following_id), Number(id))
 
-            return res.status(200).json(following)
+            if(following) return res.status(200).json({message: "success"})
+            else return res.status(400).json({message: "error"})
         } catch(error) {
             console.log(error)
             return res.status(500).json({message: "internal server error"})
@@ -17,7 +18,7 @@ export default new class FollowingController {
 
     async delete(req: Request, res: Response) {
         try {
-            const following_id = req.body.following_id
+            const following_id = req.params.id
             const id = res.locals.loginSession.registeredUser.id
             const idDeleted = await FollowingService.delete(Number(following_id), Number(id))
 

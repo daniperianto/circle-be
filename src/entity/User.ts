@@ -53,7 +53,7 @@ export class User {
     followings: Following
 
     @OneToMany(() => Following, (following) => {
-        following.follower_id
+        following.followers_id
     })
     followers: Following
 

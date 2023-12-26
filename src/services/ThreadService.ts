@@ -47,6 +47,21 @@ export default new class ThreadService {
         return threads
     }
 
+    async findByFollowing(id: number): Promise<Thread[]> {
+        const threads = await this.repository
+                                .query(`select threads.id,
+                                threads.content,
+                                threads.image,
+                                threads.created_at,
+                                json_build_object('username', users.username, 
+                                                  'fullname', users.fullname,
+                                                  'photo_profile', users.photo_profile) as user
+                                from threads inner join users on threads.user_id = users.id
+                                where user_id in ( select following_id from followings where followers_id = ${id})`)
+
+        return threads
+    }
+
     async create(data: any): Promise<Thread> {
         const obj = this.repository.create({
             content: data.content,
