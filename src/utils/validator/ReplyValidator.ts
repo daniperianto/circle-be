@@ -7,4 +7,12 @@ export const createReplySchema = joi.object({
 
     image:joi
         .string()
+        .allow(null),
+
+    userId: joi
+        .number(),
+
+    threadId: joi
+        .number()
+
 })

@@ -8,13 +8,26 @@ export default new class LikeService {
 
     async getCountByThread(threadId: number): Promise<Number> {
         const count = await this.repository
-                        .createQueryBuilder()
-                        .select('like')
-                        .from(Like, 'like')
-                        .where('like.threadId = :id', {id: threadId})
+                        .createQueryBuilder('likes')
+                        .where('likes.threadId = :id', {id: threadId})
                         .getCount()
 
         return count    
+    }
+
+    async isLiked(threadId: number, userId: number): Promise<boolean> {
+        const isLike = await this.repository.findAndCount({
+                                where: {
+                                    user: {
+                                        id: userId
+                                    },
+                                    thread: {
+                                        id: threadId
+                                    }
+                                }
+                            })
+
+        return isLike[1] == 1
     }
 
     async create(threadId: number, userId: number): Promise<Like> {

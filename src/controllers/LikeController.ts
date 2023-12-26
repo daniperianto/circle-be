@@ -16,6 +16,20 @@ export default new class LikeController {
         }
     }
 
+    async isLiked(req: Request, res: Response) {
+        try {
+            const threadId = Number(req.params.threadId)
+            const userId = Number(res.locals.loginSession.registeredUser.id)
+
+            const isLiked = await LikeService.isLiked(threadId, userId)
+
+            res.status(200).json(isLiked)
+        } catch(error) {
+            console.log(error)
+            res.status(500).json({error: "something error while getting result"})
+        }
+    }
+
     async create(req: Request, res: Response) {
         try {
             const threadId =  Number(req.params.threadId)

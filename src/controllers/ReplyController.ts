@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Reply } from './../entity/Reply';
 import ReplyService from '../services/ReplyService';
 import { createReplySchema } from '../utils/validator/ReplyValidator';
+import cloudinary from '../libs/cloudinary';
 
 export default new class ReplyController {
     async findAll(req: Request, res: Response) {
@@ -72,15 +73,21 @@ export default new class ReplyController {
     async create(req: Request, res: Response) {
         try {
             const userId = res.locals.loginSession.registeredUser.id
+            let urlImage: string = null
+            if(req.file) urlImage = await cloudinary.destination(req.file.filename)
             const threadid = Number(req.params.threadId)
-            const data = req.body
+            const data = {
+                content: req.body.content,
+                image: urlImage,
+                userId: userId,
+                threadId: threadid
+            }
 
+            console.log("data", data)
             const { error } = createReplySchema.validate(data)
             if (error) return res.status(400).json(error.message)
 
-            console.log(userId)
-            data.userId = userId
-            data.threadId = threadid
+        
             const reply = await ReplyService.create(data)
 
             return res.status(201).json(reply)
