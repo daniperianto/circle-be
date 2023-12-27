@@ -65,4 +65,41 @@ export default new class FollowingController {
             return res.status(500).json({message: "internal server error"})
         }
     }
+
+    async getFollowersAccount(req: Request, res: Response) {
+        try {
+            const id = res.locals.loginSession.registeredUser.id
+            const users = await FollowingService.getFollowersAccount(id)
+
+            return res.status(200).json(users)
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json({message: "internal server error"})
+        }
+    }
+
+    async getFollowingAccount(req: Request, res: Response) {
+        try {
+            const id = res.locals.loginSession.registeredUser.id
+            const users = await FollowingService.getFollowingAccount(id)
+
+            return res.status(200).json(users)
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json({message: "internal server error"})
+        }
+    }
+
+    async isFollowing(req: Request, res: Response) {
+        try {
+            const id = res.locals.loginSession.registeredUser.id
+            const followingId = Number(req.params.followingId)
+
+            const isFollowing = await FollowingService.isFollowing(id, followingId)
+            return res.status(200).json(isFollowing)
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json({message: "internal server error"})
+        }
+    }
 }

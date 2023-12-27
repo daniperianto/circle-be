@@ -72,6 +72,7 @@ export default new class ReplyController {
 
     async create(req: Request, res: Response) {
         try {
+            console.log(req.file)
             const userId = res.locals.loginSession.registeredUser.id
             let urlImage: string = null
             if(req.file) urlImage = await cloudinary.destination(req.file.filename)

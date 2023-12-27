@@ -60,9 +60,40 @@ export default new class FollowingService {
                                         .query(
                                             `select users.id, users.username, users.fullname, users.photo_profile from users left join ( select * from followings where followers_id = ${userId} ) as following
                                             on users.id = following.followers_id or users.id = following.following_id
-                                            where following.id is null and users.id != ${userId} limit 5`
+                                            where following.following_id is null and users.id != ${userId} limit 5`
+                                        )
+        return sugestedAccounts
+    }
+
+    async getFollowersAccount(userId: number): Promise<any[]> {
+        const followersAccount = await this.repository
+                                        .query(
+                                            `select users.* from users inner join followings 
+                                            on users.id = followings.followers_id
+                                            where followings.following_id = ${userId}`
+                                        )
+        
+        return followersAccount
+    }
+
+    async getFollowingAccount(userId: number): Promise<any[]> {
+        const followingAccount = await this.repository
+                                        .query(
+                                            `select users.* from users inner join followings 
+                                            on users.id = followings.following_id
+                                            where followings.followers_id = ${userId}`
                                         )
 
-        return sugestedAccounts
+        return followingAccount
+    }
+
+    async isFollowing(userId: number, followingId: number): Promise<boolean> {
+        const follow = await this.repository
+                                .createQueryBuilder('following')
+                                .where("following.followers_id = :id and following.following_id = :followingId", {id: userId, followingId: followingId}
+                                        )
+                                .getCount()
+
+        return follow == 1
     }
 }

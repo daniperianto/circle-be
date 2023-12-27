@@ -4,9 +4,6 @@ import { number } from "joi";
 
 @Entity({name: "followings"})
 export class Following {
-    @PrimaryGeneratedColumn()
-    id: number
-
     @ManyToOne(() => User, (user) => user.followings, {
         cascade: true, onDelete: 'CASCADE'
     })
