@@ -33,6 +33,16 @@ export default new class UserService {
         return user;
     }
 
+    async searchByFullname(search: string, id: number): Promise<User[]> {
+        const users = await this.repository
+                                .createQueryBuilder('user')
+                                .where("user.fullname ilike :name and user.id != :id", { name: `%${search}%`, id: id})
+                                .orWhere("user.username like :name and user.id != :id", { name: `%${search}%`, id: id})
+                                .getMany()
+
+        return users
+    }
+
 
     async create(data: any): Promise<User> {
         const obj = this.repository.create({

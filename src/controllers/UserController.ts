@@ -111,5 +111,21 @@ export default new class UserController{
         } catch(error) {
             return res.status(500).json({message: "internal server error"})
         }
-    } 
+    }
+
+    async searchByFullname(req: Request, res: Response) {
+        try {
+            const id: number = res.locals.loginSession.registeredUser.id
+            const search = req.params.search
+
+            const users = await UserService.searchByFullname(search, id)
+
+            return res.status(200).json(users)
+        } catch(error) {
+            console.log(error)
+            return res.status(500).json({message: "internal server error"})
+        }
+    }
+    
+    
 }
