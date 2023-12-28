@@ -56,7 +56,8 @@ export default new class UserController{
                 username: user.username,
                 fullname: user.fullname,
                 photo_profile: user.photo_profile,
-                background_image: user.background_image
+                background_image: user.background_image,
+                created_at: user.created_at
             }
 
             const token = jwt.sign({registeredUser}, process.env.SECRET_KEY, {expiresIn: 3600})
@@ -126,6 +127,17 @@ export default new class UserController{
             return res.status(500).json({message: "internal server error"})
         }
     }
-    
-    
+
+    async findById(req: Request, res: Response) {
+        try {
+            const id:number = Number(req.params.id)
+
+            const user = await UserService.findById(id)
+
+            return res.status(200).json(user)
+        } catch(error) {
+            console.log(error)
+            return res.status(500).json({message: "internal server error"})
+        }
+    }
 }

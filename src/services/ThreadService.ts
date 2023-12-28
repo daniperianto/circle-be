@@ -1,39 +1,29 @@
-import { Repository } from 'typeorm';
-import { Thread } from './../entity/Thread';
-import { AppDataSource } from '../data-source';
-import LikeService from './LikeService';
-import { number } from 'joi';
+import {Repository} from 'typeorm';
+import {Thread} from '../entity/Thread';
+import {AppDataSource} from '../data-source';
 
 export default new class ThreadService {
     private readonly repository: Repository<Thread> = AppDataSource.getRepository(Thread)
     
     async findAll(): Promise<any[]> {
-        const threads = await this.repository
-                                 .createQueryBuilder('thread')
-                                 .leftJoinAndSelect('thread.user', 'user')
-                                 .orderBy('thread.created_at', 'DESC' )
-                                 .getMany()
-
-        
-        
-        return threads
+        return await this.repository
+            .createQueryBuilder('thread')
+            .leftJoinAndSelect('thread.user', 'user')
+            .orderBy('thread.created_at', 'DESC')
+            .getMany()
     }
 
     async findById(id: number): Promise<Thread> {
-        const thread = await this.repository
-                                .createQueryBuilder('thread')
-                                .leftJoinAndSelect('thread.user', 'user')
-                                .where("thread.id = :id ", {id: id})
-                                .orderBy('thread.created_at', 'DESC' )
-                                .getOne()
-
-        
-
-        return thread
+        return await this.repository
+            .createQueryBuilder('thread')
+            .leftJoinAndSelect('thread.user', 'user')
+            .where("thread.id = :id ", {id: id})
+            .orderBy('thread.created_at', 'DESC')
+            .getOne()
     }
 
     async findByUserId(id: number): Promise<Thread[]> {
-        const threads = await this.repository.find({
+        return await this.repository.find({
             where: {
                 user: {
                     id: id
@@ -43,13 +33,11 @@ export default new class ThreadService {
                 created_at: "DESC"
             }
         })
-
-        return threads
     }
 
     async findByFollowing(id: number): Promise<Thread[]> {
-        const threads = await this.repository
-                                .query(`select threads.id,
+        return await this.repository
+            .query(`select threads.id,
                                 threads.content,
                                 threads.image,
                                 threads.created_at,
@@ -57,9 +45,8 @@ export default new class ThreadService {
                                                   'fullname', users.fullname,
                                                   'photo_profile', users.photo_profile) as user
                                 from threads inner join users on threads.user_id = users.id
-                                where user_id in ( select following_id from followings where followers_id = ${id})`)
-
-        return threads
+                                where user_id in ( select following_id from followings where followers_id = ${id})
+                                order by threads.created_at DESC`)
     }
 
     async create(data: any): Promise<Thread> {
@@ -71,9 +58,7 @@ export default new class ThreadService {
             }
         })
 
-        const thread = await this.repository.save(obj)
-
-        return thread
+        return await this.repository.save(obj)
     }
 
     async update(id: number, data: any): Promise<boolean> {
@@ -88,7 +73,7 @@ export default new class ThreadService {
                         .where("id = :id", {id: id})
                         .execute()
 
-        return result.affected == 1 ? true : false
+        return result.affected == 1
     }
 
     async delete(id: number): Promise<boolean> {
@@ -99,7 +84,7 @@ export default new class ThreadService {
                         .where("id = :id", {id: id})
                         .execute()
 
-        return result.affected == 1 ? true : false
+        return result.affected == 1
     }
 
 

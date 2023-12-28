@@ -8,7 +8,7 @@ const uploadMiddleware = new FileUpload('image')
 
 threadRouter.get("/threads/all", ThreadController.findAll)
 threadRouter.get("/thread/:id", ThreadController.findById)
-threadRouter.get("/threads/user", auth.Authentication, ThreadController.findByUser)
+threadRouter.get("/threads/user/:id", auth.Authentication, ThreadController.findByUser)
 threadRouter.get("/threads/following", auth.Authentication, ThreadController.findByFollowing)
 threadRouter.post("/thread/add",auth.Authentication, uploadMiddleware.handleUpload.bind(uploadMiddleware), ThreadController.create)
 threadRouter.put("/thread/:id",auth.Authentication, uploadMiddleware.handleUpload.bind(uploadMiddleware), ThreadController.update)

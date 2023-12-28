@@ -11,6 +11,6 @@ followingRouter.get("/followers/get-followers", auth.Authentication, FollowingCo
 followingRouter.get("/following/is-following/:followingId", auth.Authentication, FollowingController.isFollowing)
 followingRouter.post("/following/add/:id", auth.Authentication, FollowingController.create)
 followingRouter.delete("/following/delete/:id", auth.Authentication, FollowingController.delete)
-followingRouter.get("/following/suggested-accounts", auth.Authentication, FollowingController.getSugestedAccount)
+followingRouter.get("/following/suggested-accounts", auth.Authentication, FollowingController.getSuggestedAccount)
 
 export default followingRouter

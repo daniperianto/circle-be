@@ -1,52 +1,51 @@
 import { Request, Response } from 'express';
-import { Reply } from './../entity/Reply';
 import ReplyService from '../services/ReplyService';
 import { createReplySchema } from '../utils/validator/ReplyValidator';
 import cloudinary from '../libs/cloudinary';
 
 export default new class ReplyController {
-    async findAll(req: Request, res: Response) {
-        try {
-            const replies = await ReplyService.findAll()
+    // async findAll(req: Request, res: Response) {
+    //     try {
+    //         const replies = await ReplyService.findAll()
+    //
+    //         return res.status(200).json(replies)
+    //     } catch(error) {
+    //         return res.status(500).json({message: "something error while fetching data"})
+    //     }
+    // }
 
-            return res.status(200).json(replies)
-        } catch(error) {
-            return res.status(500).json({message: "something error while fetching data"})
-        }
-    }
+    // async findByUser(req: Request, res: Response) {
+    //     try {
+    //         const userId = Number(req.params.userid)
+    //         const replies = await ReplyService.findByUserId(userId)
+    //
+    //         return res.status(200).json(replies)
+    //     } catch(error) {
+    //         return res.status(500).json({message: "something error while fetching data"})
+    //     }
+    // }
 
-    async findByUser(req: Request, res: Response) {
-        try {
-            const userId = Number(req.params.userid)
-            const replies = await ReplyService.findByUserId(userId)
+    // async findById(req: Request, res: Response) {
+    //     try {
+    //         const id = Number(req.params.id)
+    //         const reply = await ReplyService.findById(id)
+    //
+    //         return res.status(200).json(reply)
+    //     } catch(error) {
+    //         return res.status(500).json({message: "something error while fetching data"})
+    //     }
+    // }
 
-            return res.status(200).json(replies)
-        } catch(error) {
-            return res.status(500).json({message: "something error while fetching data"})
-        }
-    }
-
-    async findById(req: Request, res: Response) {
-        try {
-            const id = Number(req.params.id)
-            const reply = await ReplyService.findById(id)
-
-            return res.status(200).json(reply)
-        } catch(error) {
-            return res.status(500).json({message: "something error while fetching data"})
-        }
-    }
-
-    async findByUserId(req: Request, res: Response) {
-        try {
-            const id = res.locals.loginSession.id
-            const reply = await ReplyService.findByUserId(id)
-
-            return res.status(200).json(reply)
-        } catch(error) {
-            return res.status(500).json({message: "something error while fetching data"})
-        }
-    }
+    // async findByUserId(req: Request, res: Response) {
+    //     try {
+    //         const id = res.locals.loginSession.id
+    //         const reply = await ReplyService.findByUserId(id)
+    //
+    //         return res.status(200).json(reply)
+    //     } catch(error) {
+    //         return res.status(500).json({message: "something error while fetching data"})
+    //     }
+    // }
 
     async findByThreadId(req: Request, res: Response) {
         try {
@@ -72,19 +71,17 @@ export default new class ReplyController {
 
     async create(req: Request, res: Response) {
         try {
-            console.log(req.file)
             const userId = res.locals.loginSession.registeredUser.id
             let urlImage: string = null
             if(req.file) urlImage = await cloudinary.destination(req.file.filename)
-            const threadid = Number(req.params.threadId)
+            const threadId = Number(req.params.threadId)
             const data = {
                 content: req.body.content,
                 image: urlImage,
                 userId: userId,
-                threadId: threadid
+                threadId: threadId
             }
 
-            console.log("data", data)
             const { error } = createReplySchema.validate(data)
             if (error) return res.status(400).json(error.message)
 

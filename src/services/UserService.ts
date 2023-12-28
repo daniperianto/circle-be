@@ -1,46 +1,39 @@
-import { Repository } from "typeorm"
-import { User } from "../entity/User"
-import { AppDataSource } from "../data-source"
+import {Repository} from "typeorm"
+import {User} from "../entity/User"
+import {AppDataSource} from "../data-source"
 
 export default new class UserService {
     private readonly repository: Repository<User> = AppDataSource.getRepository(User)
 
     async findById(id: number): Promise<User> {
-        const user = await this.repository.findOne({
+        return await this.repository.findOne({
             where: {
                 id: id
             }
         })
-
-        return user
     }
     async findByEmail(email: string): Promise<User> {
-        const user = await this.repository.findOne({
+        return await this.repository.findOne({
             where: {
                 email: email
-            }})
-        console.log(user)
-
-        return user;
+            }
+        });
     }
 
     async findByUsername(username: string): Promise<User> {
-        const user = await this.repository.findOne({
+        return await this.repository.findOne({
             where: {
                 username: username
-            }})
-
-        return user;
+            }
+        });
     }
 
     async searchByFullname(search: string, id: number): Promise<User[]> {
-        const users = await this.repository
-                                .createQueryBuilder('user')
-                                .where("user.fullname ilike :name and user.id != :id", { name: `%${search}%`, id: id})
-                                .orWhere("user.username like :name and user.id != :id", { name: `%${search}%`, id: id})
-                                .getMany()
-
-        return users
+        return await this.repository
+            .createQueryBuilder('user')
+            .where("user.fullname ilike :name and user.id != :id", {name: `%${search}%`, id: id})
+            .orWhere("user.username like :name and user.id != :id", {name: `%${search}%`, id: id})
+            .getMany()
     }
 
 
@@ -52,9 +45,7 @@ export default new class UserService {
             password: data.password
         })
 
-        const user = await this.repository.save(obj)
-
-        return user;
+        return await this.repository.save(obj);
     }
 
     async update(id: number, data: any): Promise<boolean> {
@@ -74,7 +65,7 @@ export default new class UserService {
                         .execute()
 
 
-        return result.affected == 1 ? true : false
+        return result.affected == 1
     }
 
     async delete(id: number): Promise<boolean> {
@@ -85,6 +76,6 @@ export default new class UserService {
                         .where("id = :id", {id: id})
                         .execute()
 
-        return user.affected == 1 ? true : false
+        return user.affected == 1
     }
 }

@@ -22,13 +22,12 @@ export default new class CloudinaryConfig {
 
     async delete(image: string) {
         try {
-            // get the image name from url without extention
+            // get the image name from url without extension
             const imageArray = image.split("/")
             let imageName = imageArray[imageArray.length -1]
             imageName = imageName.slice(0, -4)
 
-            const deleted = await cloudinary.uploader.destroy(imageName)
-            console.log("image cloudinary deleted")
+            await cloudinary.uploader.destroy(imageName)
         } catch (error) {
             throw error
         }

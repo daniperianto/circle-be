@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import FollowingService from "../services/FollowingService";
+import {QueryFailedError} from "typeorm";
 
 export default new class FollowingController {
     async create(req: Request, res: Response) {
@@ -12,6 +13,7 @@ export default new class FollowingController {
             else return res.status(400).json({message: "error"})
         } catch(error) {
             console.log(error)
+            if(error instanceof QueryFailedError) return res.status(400).json({message: "query error"})
             return res.status(500).json({message: "internal server error"})
         }
     }
@@ -54,10 +56,10 @@ export default new class FollowingController {
         }
     }
 
-    async getSugestedAccount(req: Request, res: Response) {
+    async getSuggestedAccount(_req: Request, res: Response) {
         try {
             const id = res.locals.loginSession.registeredUser.id
-            const users = await FollowingService.getSugestedAccount(id)
+            const users = await FollowingService.getSuggestedAccount(id)
 
             return res.status(200).json(users)
         } catch(error) {
@@ -66,7 +68,7 @@ export default new class FollowingController {
         }
     }
 
-    async getFollowersAccount(req: Request, res: Response) {
+    async getFollowersAccount(_req: Request, res: Response) {
         try {
             const id = res.locals.loginSession.registeredUser.id
             const users = await FollowingService.getFollowersAccount(id)
@@ -78,7 +80,7 @@ export default new class FollowingController {
         }
     }
 
-    async getFollowingAccount(req: Request, res: Response) {
+    async getFollowingAccount(_req: Request, res: Response) {
         try {
             const id = res.locals.loginSession.registeredUser.id
             const users = await FollowingService.getFollowingAccount(id)

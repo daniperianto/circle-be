@@ -1,8 +1,6 @@
-import { Thread } from './../entity/Thread';
-import { Repository } from "typeorm"
-import { Reply } from "../entity/Reply"
-import { AppDataSource } from "../data-source"
-import { User } from "../entity/User"
+import {Repository} from "typeorm"
+import {Reply} from "../entity/Reply"
+import {AppDataSource} from "../data-source"
 
 export default new class ReplyService {
     private readonly repository: Repository<Reply> = AppDataSource.getRepository(Reply)
@@ -16,17 +14,15 @@ export default new class ReplyService {
     }
 
     async findById(id: number): Promise<Reply> {
-        const reply = await this.repository.findOne({
+        return await this.repository.findOne({
             where: {
                 id: id
             }
         })
-
-        return reply
     }
 
     async findByUserId(userid: number): Promise<Reply[]> {
-        const replies = await this.repository.find({
+        return await this.repository.find({
             where: {
                 user: {
                     id: userid
@@ -36,33 +32,27 @@ export default new class ReplyService {
                 created_at: "DESC"
             }
         })
-
-        return replies
     }
 
-    async findByThreadId(threadid: number): Promise<Reply[]> {
-        const replies = await this.repository
-                            .createQueryBuilder('reply')
-                            .innerJoinAndSelect('reply.user', 'user')
-                            .where('reply.thread = :id', {id: threadid})
-                            .orderBy('reply.created_at', 'ASC')
-                            .getMany()
-
-        return replies
+    async findByThreadId(threadId: number): Promise<Reply[]> {
+        return await this.repository
+            .createQueryBuilder('reply')
+            .innerJoinAndSelect('reply.user', 'user')
+            .where('reply.thread = :id', {id: threadId})
+            .orderBy('reply.created_at', 'ASC')
+            .getMany()
     }
 
     async getRepliesCount(threadId: number): Promise<number> {
-        const count = await this.repository
-                        .createQueryBuilder()
-                        .select()
-                        .where({
-                            thread: {
-                                id: threadId
-                            }
-                        })
-                        .getCount()
-
-        return count
+        return await this.repository
+            .createQueryBuilder()
+            .select()
+            .where({
+                thread: {
+                    id: threadId
+                }
+            })
+            .getCount()
     }
 
     async create( data: any): Promise<Reply> {
@@ -73,9 +63,7 @@ export default new class ReplyService {
             thread: data.threadId
         })
 
-        const reply = await this.repository.save(obj)
-
-        return reply
+        return await this.repository.save(obj)
     }
 
     async update(id: number, data: any): Promise<boolean> {
@@ -90,7 +78,7 @@ export default new class ReplyService {
                         .where("id = :id", {id: id})
                         .execute()
 
-        return result.affected == 1 ? true : false
+        return result.affected == 1
     }
 
     async delete(id: number): Promise<boolean> {
@@ -101,6 +89,6 @@ export default new class ReplyService {
                         .where("id = :id", {id: id})
                         .execute()
 
-        return result.affected == 1 ? true : false
+        return result.affected == 1
     }
 }

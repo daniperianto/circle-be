@@ -1,18 +1,16 @@
-import { Repository } from "typeorm"
-import { Like } from "../entity/Like"
-import { AppDataSource } from "../data-source"
+import {Repository} from "typeorm"
+import {Like} from "../entity/Like"
+import {AppDataSource} from "../data-source"
 
 export default new class LikeService {
     private readonly repository: Repository<Like> = AppDataSource.getRepository(Like)
 
 
     async getCountByThread(threadId: number): Promise<Number> {
-        const count = await this.repository
-                        .createQueryBuilder('likes')
-                        .where('likes.threadId = :id', {id: threadId})
-                        .getCount()
-
-        return count    
+        return await this.repository
+            .createQueryBuilder('likes')
+            .where('likes.threadId = :id', {id: threadId})
+            .getCount()
     }
 
     async isLiked(threadId: number, userId: number): Promise<boolean> {
@@ -63,7 +61,7 @@ export default new class LikeService {
                                 })
                                 .execute()
 
-        return result.affected == 1 ? true : false
+        return result.affected == 1
     }
 
 
