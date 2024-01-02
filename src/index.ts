@@ -28,7 +28,6 @@ AppDataSource.initialize().then(async () => {
     app.use("/api/v1", followingRouter)
 
     
-    
 
     app.listen(port, () => console.log("Server running on 5000"))
 

@@ -1,6 +1,6 @@
 import * as joi from "joi"
 
-export const createUserSchema = joi.object({
+export const createUpdateUserSchema = joi.object({
     username:joi
         .string()
         .pattern(new RegExp(`@*`))
@@ -10,23 +10,23 @@ export const createUserSchema = joi.object({
     fullname:joi
         .string()
         .min(2)
-        .max(30)
-        .required(),
+        .max(30),
 
     email:joi
         .string()
-        .min(4)
-        .required(),
+        .min(4),
 
     password:joi
         .string()
-        .min(8)
-        .required(),
+        .min(8),
 
     bio:joi
         .string(),
 
     photo_profile:joi
+        .string(),
+
+    background_image:joi
         .string()
 
 })

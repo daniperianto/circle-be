@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import * as multer from "multer";
 
 export default class FileUpload {
-    private fieldName: string;
+    private readonly fieldName: string;
 
 
     constructor(fieldName: string) {
@@ -10,11 +10,11 @@ export default class FileUpload {
     }
 
     private storage = multer.diskStorage({
-        destination: (req, res, cb) => {
+        destination: (_req, _res, cb) => {
             cb(null, "src/upload/")
         },
 
-        filename: (req, file, cb) => {
+        filename: (_req, file, cb) => {
             const unixSuffix = Date.now()
             cb(null, file.fieldname + "-" + unixSuffix + ".png")
         }

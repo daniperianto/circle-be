@@ -1,5 +1,5 @@
 
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, Timestamp } from "typeorm"
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 import { User } from "./User"
 import { Like } from './Like';
 import { Reply } from "./Reply";

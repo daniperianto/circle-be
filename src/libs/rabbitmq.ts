@@ -13,7 +13,7 @@ export default new class RabbitConfiq {
             await channel.close()
             await connection.close()
 
-            return
+            return "success"
         } catch(error) {
             console.log(error)
             return error

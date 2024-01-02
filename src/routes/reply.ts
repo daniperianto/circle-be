@@ -1,5 +1,4 @@
 import * as  express  from 'express';
-import ThreadController from '../controllers/ThreadController';
 import auth from '../middleware/auth';
 import ReplyController from '../controllers/ReplyController';
 import FileUpload from '../middleware/uploadfile';

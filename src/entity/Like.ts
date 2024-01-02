@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
 import { User } from "./User";
 import { Thread } from "./Thread";
 

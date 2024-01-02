@@ -1,15 +1,15 @@
 import {Repository} from "typeorm"
 import {AppDataSource} from "../data-source"
-import {Following} from "../entity/Following"
+import {Follows} from "../entity/Follows"
 
 export default new class FollowingService {
-    private readonly repository: Repository<Following> = AppDataSource.getRepository(Following)
+    private readonly repository: Repository<Follows> = AppDataSource.getRepository(Follows)
 
-    async create(followingId: number, followersId: number): Promise<Following> {
+    async create(followingId: number, followersId: number): Promise<Follows> {
         const result = await this.repository
                                 .createQueryBuilder()
                                 .insert()
-                                .into(Following)
+                                .into(Follows)
                                 .values({
                                     followers_id: {
                                         id: followersId
@@ -27,7 +27,7 @@ export default new class FollowingService {
         const result = await this.repository
                         .createQueryBuilder()
                         .delete()
-                        .from(Following)
+                        .from(Follows)
                         .where("following_id = :followingId and followers_id = :followersId ", {
                             followingId: followingId, followersId: followersId
                         })
@@ -53,34 +53,35 @@ export default new class FollowingService {
     async getSuggestedAccount(userId: number): Promise<any[]> {
         return await this.repository
             .query(
-                `select users.id, users.username, users.fullname, users.photo_profile from users left join ( select * from followings where followers_id = ${userId} ) as following
-                                            on users.id = following.followers_id or users.id = following.following_id
-                                            where following.following_id is null and users.id != ${userId} limit 5`
+                `select users.id, users.username, users.fullname, users.photo_profile from users left join 
+                        ( select * from follows where followers_id = ${userId} ) as following
+                        on users.id = following.followers_id or users.id = following.following_id
+                        where following.following_id is null and users.id != ${userId} limit 5`
             )
     }
 
     async getFollowersAccount(userId: number): Promise<any[]> {
         return await this.repository
             .query(
-                `select users.* from users inner join followings 
-                                            on users.id = followings.followers_id
-                                            where followings.following_id = ${userId}`
+                `select users.* from users inner join follows 
+                                            on users.id = follows.followers_id
+                                            where follows.following_id = ${userId}`
             )
     }
 
     async getFollowingAccount(userId: number): Promise<any[]> {
         return await this.repository
             .query(
-                `select users.* from users inner join followings 
-                                            on users.id = followings.following_id
-                                            where followings.followers_id = ${userId}`
+                `select users.* from users inner join follows 
+                                            on users.id = follows.following_id
+                                            where follows.followers_id = ${userId}`
             )
     }
 
     async isFollowing(userId: number, followingId: number): Promise<boolean> {
         const follow = await this.repository
-                                .createQueryBuilder('following')
-                                .where("following.followers_id = :id and following.following_id = :followingId", {id: userId, followingId: followingId}
+                                .createQueryBuilder('follows')
+                                .where("follows.followers_id = :id and follows.following_id = :followingId", {id: userId, followingId: followingId}
                                         )
                                 .getCount()
 

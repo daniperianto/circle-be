@@ -1,10 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, PrimaryColumn } from "typeorm";
+import { Entity, Column, ManyToOne, JoinColumn, PrimaryColumn } from "typeorm";
 import { User } from './User';
-import { number } from "joi";
 
-@Entity({name: "followings"})
-export class Following {
-    @ManyToOne(() => User, (user) => user.followings, {
+@Entity({name: "follows"})
+export class Follows {
+    @ManyToOne(() => User, (user) => user.following, {
         cascade: true, onDelete: 'CASCADE'
     })
     @JoinColumn({name: "following_id"})

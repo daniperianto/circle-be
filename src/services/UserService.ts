@@ -1,9 +1,13 @@
-import {Repository} from "typeorm"
+import {DataSource, Repository} from "typeorm"
 import {User} from "../entity/User"
-import {AppDataSource} from "../data-source"
 
-export default new class UserService {
-    private readonly repository: Repository<User> = AppDataSource.getRepository(User)
+export class UserService {
+    private readonly repository: Repository<User>;
+
+    public constructor(dataSource: DataSource) {
+        if(!dataSource) throw new Error("data source is null")
+        this.repository = dataSource.getRepository(User)
+    }
 
     async findById(id: number): Promise<User> {
         return await this.repository.findOne({
@@ -49,16 +53,43 @@ export default new class UserService {
     }
 
     async update(id: number, data: any): Promise<boolean> {
+        const user = await this.repository.findOne({
+            where: {
+                id: id
+            }
+        })
+
+
+        if(data.fullname) {
+            user.fullname = data.fullname
+        }
+        if(data.username) {
+            user.username = data.username
+        }
+        if(data.email) {
+            user.email = data.email
+        }
+        if(data.bio) {
+            user.bio = data.bio
+        }
+        if(data.photo_profile) {
+            user.photo_profile = data.photo_profile
+        }
+        if(data.background_image) {
+            user.background_image = data.background_image
+        }
+
+
         const result = await this.repository
                         .createQueryBuilder()
                         .update(User)
                         .set({
-                            username: data.username,
-                            fullname: data.fullname,
-                            email: data.email,
-                            password: data.password,
-                            photo_profile: data.photo_profile,
-                            bio: data.bio,
+                            username: user.username,
+                            fullname: user.fullname,
+                            email: user.email,
+                            photo_profile: user.photo_profile,
+                            bio: user.bio,
+                            background_image: user.background_image,
                             updated_at: new Date()
                         })
                         .where("id = :id", {id: id})

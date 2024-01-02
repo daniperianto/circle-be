@@ -1,7 +1,9 @@
+// noinspection BadExpressionStatementJS
+
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm"
 import { Thread } from "./Thread"
 import { Like } from "./Like"
-import { Following } from "./Following"
+import { Follows } from "./Follows"
 import { Reply } from "./Reply"
 
 @Entity({name: "users"})
@@ -47,15 +49,15 @@ export class User {
     })
     likes: Like
 
-    @OneToMany(() => Following, (following) => {
+    @OneToMany(() => Follows, (following) => {
         following.following_id
     })
-    followings: Following
+    following: Follows
 
-    @OneToMany(() => Following, (following) => {
+    @OneToMany(() => Follows, (following) => {
         following.followers_id
     })
-    followers: Following
+    followers: Follows
 
     @OneToMany(() => Reply, (reply) => {
         reply.user

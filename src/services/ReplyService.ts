@@ -5,13 +5,13 @@ import {AppDataSource} from "../data-source"
 export default new class ReplyService {
     private readonly repository: Repository<Reply> = AppDataSource.getRepository(Reply)
 
-    async findAll(): Promise<Reply[]> {
-        return await this.repository.find({
-            order: {
-                created_at: "DESC"
-            }
-        })
-    }
+    // async findAll(): Promise<Reply[]> {
+    //     return await this.repository.find({
+    //         order: {
+    //             created_at: "DESC"
+    //         }
+    //     })
+    // }
 
     async findById(id: number): Promise<Reply> {
         return await this.repository.findOne({
@@ -21,18 +21,18 @@ export default new class ReplyService {
         })
     }
 
-    async findByUserId(userid: number): Promise<Reply[]> {
-        return await this.repository.find({
-            where: {
-                user: {
-                    id: userid
-                }
-            },
-            order: {
-                created_at: "DESC"
-            }
-        })
-    }
+    // async findByUserId(userid: number): Promise<Reply[]> {
+    //     return await this.repository.find({
+    //         where: {
+    //             user: {
+    //                 id: userid
+    //             }
+    //         },
+    //         order: {
+    //             created_at: "DESC"
+    //         }
+    //     })
+    // }
 
     async findByThreadId(threadId: number): Promise<Reply[]> {
         return await this.repository

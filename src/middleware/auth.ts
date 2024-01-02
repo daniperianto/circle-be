@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import {NextFunction, Request, Response} from "express";
 import * as jwt from "jsonwebtoken"
 
 export default new class Authentication {
@@ -13,8 +13,7 @@ export default new class Authentication {
             const token = auth.split(" ")[1]
 
             try {
-                const loginSession = jwt.verify(token, process.env.SECRET_KEY)
-                res.locals.loginSession = loginSession
+                res.locals.loginSession = jwt.verify(token, process.env.SECRET_KEY)
                 next()
             } catch (error) {
                 console.log(error)

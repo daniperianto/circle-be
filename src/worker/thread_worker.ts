@@ -1,4 +1,4 @@
-import { EventEmitter } from "stream"
+import {EventEmitter} from "stream"
 import * as amqp from "amqplib"
 import cloudinary from "../libs/cloudinary"
 import ThreadService from "../services/ThreadService"
@@ -8,24 +8,28 @@ export default new class ThreadWorker extends EventEmitter {
         try {
             const channel = await connect.createChannel()
 
-            await channel.assertQueue(queueName)
+            const data = await channel.assertQueue("threadQueue", {durable: true})
+            console.log(data)
             await channel.consume(queueName, async (message) => {
                 if(message != null) {
                     try {
+                        cloudinary.upload()
                         const payload = JSON.parse(message.content.toString())
 
-                        const urlImage = cloudinary.destination(payload.image)
-                        payload.image = urlImage
+                        payload.image = await cloudinary.destination(payload.image)
 
-                        ThreadService.create(payload)
+                        console.log("payload: " + payload)
+                        const response = await ThreadService.create(payload)
+                        console.log(response)
                     } catch(error) {
                         console.log(error)
                     }
                 }
+            }, {
+                noAck: false
             })
         } catch(error) {
             console.log(error)
-
         }
     } 
 }

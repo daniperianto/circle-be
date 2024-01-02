@@ -45,7 +45,7 @@ export default new class ThreadService {
                                                   'fullname', users.fullname,
                                                   'photo_profile', users.photo_profile) as user
                                 from threads inner join users on threads.user_id = users.id
-                                where user_id in ( select following_id from followings where followers_id = ${id})
+                                where user_id in ( select following_id from follows where followers_id = ${id})
                                 order by threads.created_at DESC`)
     }
 
